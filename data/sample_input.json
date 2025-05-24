@@ -27,7 +27,7 @@
     },
     {
       "id": "xxx5",
-      "name": "前年度からの繰越",
+      "name": "前年からの繰越額",
       "parent": "xxx66",
       "direction": "income"
     },
@@ -105,7 +105,7 @@
     },
     {
       "id": "xxxh",
-      "name": "翌年度への繰越",
+      "name": "翌年への繰越額",
       "parent": "xxx66",
       "direction": "expense"
     }
@@ -212,14 +212,14 @@
     {
       "id": "xxx15",
       "category_id": "xxx5",
-      "name": "前年度からの繰越",
+      "name": "前年からの繰越額",
       "date": "R5/01/01",
       "value": 1000000
     },
     {
       "id": "xxx16",
       "category_id": "xxxh",
-      "name": "翌年度への繰越",
+      "name": "翌年への繰越額",
       "date": "R5/12/31",
       "value": 458803
     },

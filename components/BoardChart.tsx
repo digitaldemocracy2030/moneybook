@@ -97,8 +97,8 @@ const CustomLabelsLayer = ({
           node.label.length * approxCharWidth + textPadding * 2;
         const labelHeight = 30;
         // ノードの右側または左側にラベルを配置するためのオフセット計算
-        let labelX;
-        let labelY;
+        let labelX: number;
+        let labelY: number;
         if (node.id === '総収入') {
           labelX = node.x0 + (nodeWidth - labelWidth) / 2;
           labelY = node.y0 + nodeHeight / 2 - labelHeight / 2;

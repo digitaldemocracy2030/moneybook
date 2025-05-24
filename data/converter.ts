@@ -153,7 +153,7 @@ function convert(data: InputData): OutputData {
   };
 }
 
-function validateInput(data: any): string[] {
+function validateInput(data: InputData): string[] {
   const errors: string[] = [];
   if (typeof data.year !== 'number') {
     throw new Error('year は数値である必要があります');
@@ -183,21 +183,25 @@ function validateInput(data: any): string[] {
     }
   }
 
-  if (!data.categories.find((c: any) => c.name === '前年からの繰越額')) {
+  if (
+    !data.categories.find((c: InputCategory) => c.name === '前年からの繰越額')
+  ) {
     throw new Error('カテゴリ「前年からの繰越額」が存在する必要があります');
   }
-  if (!data.categories.find((c: any) => c.name === '翌年への繰越額')) {
+  if (
+    !data.categories.find((c: InputCategory) => c.name === '翌年への繰越額')
+  ) {
     throw new Error('カテゴリ「翌年への繰越額」が存在する必要があります');
   }
 
   const previousYearCategory = data.categories.find(
-    (c: any) => c.name === '前年からの繰越額',
+    (c: InputCategory) => c.name === '前年からの繰越額',
   );
   const nextYearCategory = data.categories.find(
-    (c: any) => c.name === '翌年への繰越額',
+    (c: InputCategory) => c.name === '翌年への繰越額',
   );
   const previousYearTransactions = data.transactions.filter(
-    (t: any) => t.category_id === previousYearCategory.id,
+    (t: InputTransaction) => t.category_id === previousYearCategory?.id,
   );
   if (previousYearTransactions.length !== 1) {
     throw new Error(
@@ -205,7 +209,7 @@ function validateInput(data: any): string[] {
     );
   }
   const nextYearTransactions = data.transactions.filter(
-    (t: any) => t.category_id === nextYearCategory.id,
+    (t: InputTransaction) => t.category_id === nextYearCategory?.id,
   );
   if (nextYearTransactions.length !== 1) {
     throw new Error(
@@ -214,17 +218,17 @@ function validateInput(data: any): string[] {
   }
 
   const incomeCategoryIds = data.categories
-    .filter((c: any) => c.direction === 'income')
-    .map((c: any) => c.id);
+    .filter((c: InputCategory) => c.direction === 'income')
+    .map((c: InputCategory) => c.id);
   const expenseCategoryIds = data.categories
-    .filter((c: any) => c.direction === 'expense')
-    .map((c: any) => c.id);
+    .filter((c: InputCategory) => c.direction === 'expense')
+    .map((c: InputCategory) => c.id);
   const totalIncome = data.transactions
-    .filter((t: any) => incomeCategoryIds.includes(t.category_id))
-    .reduce((sum: number, t: any) => sum + t.value, 0);
+    .filter((t: InputTransaction) => incomeCategoryIds.includes(t.category_id))
+    .reduce((sum: number, t: InputTransaction) => sum + t.value, 0);
   const totalExpense = data.transactions
-    .filter((t: any) => expenseCategoryIds.includes(t.category_id))
-    .reduce((sum: number, t: any) => sum + t.value, 0);
+    .filter((t: InputTransaction) => expenseCategoryIds.includes(t.category_id))
+    .reduce((sum: number, t: InputTransaction) => sum + t.value, 0);
   if (totalIncome !== totalExpense) {
     errors.push(
       `income と expense の合計が一致しません: ${totalIncome} !== ${totalExpense}`,
@@ -232,7 +236,7 @@ function validateInput(data: any): string[] {
   }
 
   const rootCategoryCount = data.categories.filter(
-    (c: any) => !c.parent,
+    (c: InputCategory) => !c.parent,
   ).length;
   if (rootCategoryCount !== 1) {
     errors.push('root category はちょうど1つである必要があります');
@@ -245,13 +249,13 @@ function validateInput(data: any): string[] {
     }
   }
 
-  const categoryIds = data.categories.map((c: any) => c.id);
+  const categoryIds = data.categories.map((c: InputCategory) => c.id);
   const parentCategoryIds = data.categories
-    .map((c: any) => c.parent)
-    .filter((p: any) => p !== null);
+    .map((c: InputCategory) => c.parent)
+    .filter((p: string | null) => p !== null);
   const leafCategoryIds = data.categories
-    .filter((c: any) => !parentCategoryIds.includes(c.id))
-    .map((c: any) => c.id);
+    .filter((c: InputCategory) => !parentCategoryIds.includes(c.id))
+    .map((c: InputCategory) => c.id);
   for (const transaction of data.transactions) {
     if (
       !transaction.id ||
