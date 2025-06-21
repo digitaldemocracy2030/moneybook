@@ -5,6 +5,9 @@ export type Profile = {
   district?: string; // 選挙区
   image: string; // 画像URL
 };
+// 政治家一覧表示用
+export type ProfileList = Pick<Profile, 'name' | 'image'> &
+  Partial<Omit<Profile, 'name' | 'image'>>;
 
 export type Report = {
   id: string; // ID
